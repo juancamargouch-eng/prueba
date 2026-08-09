@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import { useTramites } from '../hooks/useTramites.js';
+import { TramiteModal } from './TramiteModal.jsx';
+import { CambiarEstadoModal } from './CambiarEstadoModal.jsx';
+import { EliminarTramiteModal } from './EliminarTramiteModal.jsx';
+import { DetalleTramiteModal } from './DetalleTramiteModal.jsx';
 
 const ESTADOS = ['REGISTRADO', 'EN_FIRMAS', 'PRESENTADO', 'OBSERVADO', 'INSCRITO', 'CERRADO', 'ANULADO'];
 
@@ -28,8 +32,30 @@ function EstadoBadge({ estado }) {
     );
 }
 
+
 export function BandejaTramites() {
     const [filtros, setFiltros] = useState({ estado: '', busqueda: '', page: 1, pageSize: 10 });
+    const [modalAbierto, setModalAbierto] = useState(false);
+    const [tramiteEditando, setTramiteEditando] = useState(null); // null = modo crear
+    const [tramiteCambiandoEstado, setTramiteCambiandoEstado] = useState(null);
+    const [tramiteEliminando, setTramiteEliminando] = useState(null);
+    const [tramiteViendo, setTramiteViendo] = useState(null)
+
+
+    const abrirCrear = () => {
+        setTramiteEditando(null);
+        setModalAbierto(true);
+    };
+
+    const abrirEditar = (tramite) => {
+        setTramiteEditando(tramite);
+        setModalAbierto(true);
+    };
+
+    const cerrarModal = () => {
+        setModalAbierto(false);
+        setTramiteEditando(null);
+    };
 
     const { data, isLoading, isError, error } = useTramites({
         estado: filtros.estado || undefined,
@@ -69,7 +95,7 @@ export function BandejaTramites() {
                     onChange={(e) => cambiarFiltro('busqueda', e.target.value)}
                 />
 
-                <button>Nuevo trámite</button>
+                <button onClick={abrirCrear}>Nuevo trámite</button>
             </div>
 
             <table>
@@ -89,12 +115,43 @@ export function BandejaTramites() {
                                 <td>{tramite.marca} {tramite.modelo} ({tramite.anio})</td>
                                 <td><EstadoBadge estado={tramite.estado} /></td>
                                 <td>{new Date(tramite.createdAt).toLocaleDateString()}</td>
-                                <td>Ver / Editar / Cambiar estado / Eliminar</td>
+                                <td>
+                                    <button onClick={() => abrirEditar(tramite)}>Editar</button>
+                                    {' '}
+                                    <button onClick={() => setTramiteCambiandoEstado(tramite)}>Cambiar estado</button>
+                                    {' '}
+                                    <button onClick={() => setTramiteEliminando(tramite)} disabled={['INSCRITO', 'CERRADO'].includes(tramite.estado)}>Eliminar</button>
+                                    {' '}
+                                    <button onClick={() => setTramiteViendo(tramite)}>Ver</button>
+                                </td>
                             </tr>
                         ))
                     )}
                 </tbody>
             </table>
+
+            <TramiteModal
+                isOpen={modalAbierto}
+                onClose={cerrarModal}
+                tramiteEditando={tramiteEditando}
+            />
+
+            <CambiarEstadoModal
+                isOpen={Boolean(tramiteCambiandoEstado)}
+                onClose={() => setTramiteCambiandoEstado(null)}
+                tramite={tramiteCambiandoEstado}
+            />
+
+            <EliminarTramiteModal
+                isOpen={Boolean(tramiteEliminando)}
+                onClose={() => setTramiteEliminando(null)}
+                tramite={tramiteEliminando}
+            />
+            <DetalleTramiteModal
+                isOpen={Boolean(tramiteViendo)}
+                onClose={() => setTramiteViendo(null)}
+                tramite={tramiteViendo}
+            />
 
             <div style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
                 <button disabled={meta.page <= 1} onClick={() => cambiarPagina(meta.page - 1)}>Anterior</button>
