@@ -1,10 +1,8 @@
+// frontend/src/modules/tramite/components/DetalleTramiteModal.jsx
 import { Modal } from '../../../shared/components/Modal.jsx';
-import { useSeguimientos } from '../seguimiento/hooks/useSeguimientos.js';
+import { HistorialSeguimiento } from '../seguimiento/components/HistorialSeguimiento.jsx';
 
 export function DetalleTramiteModal({ isOpen, onClose, tramite }) {
-    const { data, isLoading } = useSeguimientos(tramite?.id);
-    const historial = data?.data ?? [];
-
     if (!tramite) return null;
 
     return (
@@ -20,26 +18,7 @@ export function DetalleTramiteModal({ isOpen, onClose, tramite }) {
             <p>Email: {tramite.cliente?.email ?? 'N/A'} — Tel: {tramite.cliente?.telefono ?? 'N/A'}</p>
 
             <h3>Historial de seguimiento</h3>
-            {isLoading ? (
-                <p>Cargando historial...</p>
-            ) : (
-                <table>
-                    <thead>
-                        <tr><th>Fecha</th><th>De</th><th>A</th><th>Comentario</th><th>Usuario</th></tr>
-                    </thead>
-                    <tbody>
-                        {historial.map((s) => (
-                            <tr key={s.id}>
-                                <td>{new Date(s.createdAt).toLocaleString()}</td>
-                                <td>{s.estado_anterior ?? '—'}</td>
-                                <td>{s.estado_nuevo}</td>
-                                <td>{s.comentario ?? '—'}</td>
-                                <td>{s.usuario ?? '—'}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            )}
+            <HistorialSeguimiento tramiteId={tramite.id} />
         </Modal>
     );
 }

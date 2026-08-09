@@ -1,10 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import httpClient from '../../../../shared/api/httpClient.js';
-
-const obtenerSeguimientos = async (tramiteId) => {
-    const { data } = await httpClient.get(`/tramites/${tramiteId}/seguimientos`);
-    return data;
-};
+import { obtenerSeguimientos } from '../api/seguimiento.api.js';
 
 export const useSeguimientos = (tramiteId) => {
     return useQuery({
