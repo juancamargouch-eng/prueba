@@ -1,5 +1,6 @@
 import * as clienteRepository from './cliente.repository.js';
 
+
 class ClienteError extends Error {
     constructor(mensaje, status, errores = null) {
         super(mensaje);

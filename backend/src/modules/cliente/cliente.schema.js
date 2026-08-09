@@ -13,7 +13,7 @@ const numDoc = z
     .max(20, 'num_doc debe tener maximo 20 caracteres')
     .regex(/^[A-Za-z0-9]+$/, 'num_doc debe contener solo letras y números');
 
-const nombre = z
+const nombres = z
     .string({ error: 'nombres es requerido' })
     .trim()
     .min(2, 'nombres debe tener almenos 2 caracteres')
@@ -60,7 +60,7 @@ const fechaNac = z
 export const crearClienteSchema = z.object({
     tipo_doc: tipoDoc,
     num_doc: numDoc,
-    nombre,
+    nombres,
     ap_paterno: apPaterno,
     ap_materno: apMaterno,
     email,
@@ -72,7 +72,7 @@ export const crearClienteSchema = z.object({
 export const actualizarClienteSchema = z.object({
     tipo_doc: tipoDoc.optional(),
     num_doc: numDoc.optional(),
-    nombres: nombre.optional(),
+    nombres: nombres.optional(),
     ap_paterno: apPaterno.optional(),
     ap_materno: apMaterno,
     email,
