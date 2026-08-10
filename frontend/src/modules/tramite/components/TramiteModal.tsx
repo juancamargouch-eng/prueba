@@ -3,7 +3,7 @@ import { TramiteForm } from './TramiteForm';
 import { useCrearTramite } from '../hooks/useCrearTramite';
 import { useActualizarTramite } from '../hooks/useActualizarTramite';
 import type { Tramite } from '../tramite.types';
-import { AxiosLikeError } from '../../../shared/types/modal';
+import type { AxiosLikeError } from '../../../shared/types/modal';
 
 interface Props {
     isOpen: boolean;
@@ -42,7 +42,7 @@ export function TramiteModal({ isOpen, onClose, tramiteEditando }: Props) {
                 isSubmitting={mutacionActiva.isPending}
             />
             {mutacionActiva.isError && (
-                <p style={{ color: 'red' }}>
+                <p className="text-xs text-red-600 mt-3">
                     {(mutacionActiva.error as AxiosLikeError)?.response?.data?.mensaje ?? 'Ocurrió un error al guardar'}
                 </p>
             )}

@@ -40,41 +40,41 @@ export function TramiteForm({ tramiteInicial, onSubmit, isSubmitting }: Props) {
 
     return (
         <form onSubmit={handleSubmit(onSubmit)}>
-            <fieldset>
-                <legend>Vehículo</legend>
-                <input placeholder="Marca" {...register('marca', { required: 'Marca es requerida' })} />
-                {errors.marca && <p style={{ color: 'red' }}>{errors.marca.message}</p>}
+            <fieldset className="mb-4 border border-slate-200 rounded-md p-4">
+                <legend className="text-xs font-semibold text-slate-500 uppercase px-1">Vehículo</legend>
+                <input placeholder="Marca" {...register('marca', { required: 'Marca es requerida' })} className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-slate-400" />
+                {errors.marca && <p className="text-xs text-red-600 mb-2">{errors.marca.message}</p>}
 
-                <input placeholder="Modelo" {...register('modelo', { required: 'Modelo es requerido' })} />
-                {errors.modelo && <p style={{ color: 'red' }}>{errors.modelo.message}</p>}
+                <input placeholder="Modelo" {...register('modelo', { required: 'Modelo es requerido' })} className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-slate-400" />
+                {errors.modelo && <p className="text-xs text-red-600 mb-2">{errors.modelo.message}</p>}
 
-                <input placeholder="Año" type="number" {...register('anio', { required: 'Año es requerido' })} />
-                {errors.anio && <p style={{ color: 'red' }}>{errors.anio.message}</p>}
+                <input placeholder="Año" type="number" {...register('anio', { required: 'Año es requerido' })} className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-slate-400" />
+                {errors.anio && <p className="text-xs text-red-600 mb-2">{errors.anio.message}</p>}
 
-                <input placeholder="Placa (opcional)" {...register('placa')} />
-                <input placeholder="Monto (opcional)" type="number" step="0.01" {...register('monto')} />
+                <input placeholder="Placa (opcional)" {...register('placa')} className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-slate-400" />
+                <input placeholder="Monto (opcional)" type="number" step="0.01" {...register('monto')} className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-slate-400" />
             </fieldset>
 
-            <fieldset>
-                <legend>Cliente</legend>
-                <select {...register('cliente.tipo_doc', { required: true })}>
+            <fieldset className="mb-4 border border-slate-200 rounded-md p-4">
+                <legend className="text-xs font-semibold text-slate-500 uppercase px-1">Cliente</legend>
+                <select {...register('cliente.tipo_doc', { required: true })} className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-slate-400">
                     <option value="DNI">DNI</option>
                     <option value="CE">CE</option>
                     <option value="RUC">RUC</option>
                 </select>
-                <input placeholder="N° Documento" {...register('cliente.num_doc', { required: 'N° documento es requerido' })} />
-                {errors.cliente?.num_doc && <p style={{ color: 'red' }}>{errors.cliente.num_doc.message}</p>}
+                <input placeholder="N° Documento" {...register('cliente.num_doc', { required: 'N° documento es requerido' })} className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-slate-400" />
+                {errors.cliente?.num_doc && <p className="text-xs text-red-600 mb-2">{errors.cliente.num_doc.message}</p>}
 
-                <input placeholder="Nombres" {...register('cliente.nombres', { required: 'Nombres son requeridos' })} disabled={Boolean(tramiteInicial)} />
-                {errors.cliente?.nombres && <p style={{ color: 'red' }}>{errors.cliente.nombres.message}</p>}
+                <input placeholder="Nombres" {...register('cliente.nombres', { required: 'Nombres son requeridos' })} disabled={Boolean(tramiteInicial)} className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-slate-400" />
+                {errors.cliente?.nombres && <p className="text-xs text-red-600 mb-2">{errors.cliente.nombres.message}</p>}
 
-                <input placeholder="Apellido paterno" {...register('cliente.ap_paterno', { required: 'Apellido paterno es requerido' })} disabled={Boolean(tramiteInicial)} />
-                <input placeholder="Apellido materno" {...register('cliente.ap_materno')} disabled={Boolean(tramiteInicial)} />
-                <input placeholder="Email" type="email" {...register('cliente.email')} disabled={Boolean(tramiteInicial)} />
-                <input placeholder="Teléfono" {...register('cliente.telefono')} disabled={Boolean(tramiteInicial)} />
+                <input placeholder="Apellido paterno" {...register('cliente.ap_paterno', { required: 'Apellido paterno es requerido' })} disabled={Boolean(tramiteInicial)} className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-slate-400" />
+                <input placeholder="Apellido materno" {...register('cliente.ap_materno')} disabled={Boolean(tramiteInicial)} className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-slate-400" />
+                <input placeholder="Email" type="email" {...register('cliente.email')} disabled={Boolean(tramiteInicial)} className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-slate-400" />
+                <input placeholder="Teléfono" {...register('cliente.telefono')} disabled={Boolean(tramiteInicial)} className="w-full border border-slate-300 rounded-md px-3 py-2 text-sm mb-1 focus:outline-none focus:ring-2 focus:ring-slate-400" />
             </fieldset>
 
-            <button type="submit" disabled={isSubmitting}>
+            <button className="bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-4 py-2 rounded-md disabled:opacity-50" type="submit" disabled={isSubmitting}>
                 {isSubmitting ? 'Guardando...' : 'Guardar'}
             </button>
         </form>
