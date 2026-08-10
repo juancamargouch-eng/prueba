@@ -22,14 +22,15 @@ services:
     ports:
       - "4000:4000"
     depends_on:
-    mysql:
-      condition: service_healthy
+      mysql:
+        condition: service_healthy
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: ${VITE_API_URL}
     restart: unless-stopped
-    env_file:
-      - ./frontend/.env
     ports:
       - "5173:5173"
     depends_on:
