@@ -1,8 +1,13 @@
-import { useSeguimientos } from '../hooks/useSeguimientos.js';
+import { useSeguimientos } from '../hooks/useSeguimientos';
+import type { Seguimiento } from '../api/seguimiento.api';
 
-export function HistorialSeguimiento({ tramiteId }) {
+interface Props {
+    tramiteId: number;
+}
+
+export function HistorialSeguimiento({ tramiteId }: Props) {
     const { data, isLoading } = useSeguimientos(tramiteId);
-    const historial = data?.data ?? [];
+    const historial: Seguimiento[] = data?.data ?? [];
 
     if (isLoading) return <p>Cargando historial...</p>;
 
@@ -12,7 +17,7 @@ export function HistorialSeguimiento({ tramiteId }) {
                 <tr><th>Fecha</th><th>De</th><th>A</th><th>Comentario</th><th>Usuario</th></tr>
             </thead>
             <tbody>
-                {historial.map((s) => (
+                {historial.map((s: Seguimiento) => (
                     <tr key={s.id}>
                         <td>{new Date(s.createdAt).toLocaleString()}</td>
                         <td>{s.estado_anterior ?? '—'}</td>

@@ -1,7 +1,14 @@
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
+import type { Tramite } from '../tramite.types';
 
-export function TramiteForm({ tramiteInicial, onSubmit, isSubmitting }) {
+interface Props {
+    tramiteInicial: Tramite | null;
+    onSubmit: (datos: unknown) => void;
+    isSubmitting: boolean;
+}
+
+export function TramiteForm({ tramiteInicial, onSubmit, isSubmitting }: Props) {
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         defaultValues: {
             marca: '', modelo: '', anio: '', placa: '', monto: '',
@@ -9,20 +16,20 @@ export function TramiteForm({ tramiteInicial, onSubmit, isSubmitting }) {
         },
     });
 
-    // Si estamos editando, precarga el formulario cuando llegue tramiteInicial
+
     useEffect(() => {
         if (tramiteInicial) {
             reset({
                 marca: tramiteInicial.marca,
                 modelo: tramiteInicial.modelo,
-                anio: tramiteInicial.anio,
+                anio: String(tramiteInicial.anio),
                 placa: tramiteInicial.placa ?? '',
-                monto: tramiteInicial.monto ?? '',
+                monto: tramiteInicial.monto != null ? String(tramiteInicial.monto) : '',
                 cliente: {
-                    tipo_doc: tramiteInicial.cliente?.tipo_doc,
-                    num_doc: tramiteInicial.cliente?.num_doc,
-                    nombres: tramiteInicial.cliente?.nombres,
-                    ap_paterno: tramiteInicial.cliente?.ap_paterno,
+                    tipo_doc: tramiteInicial.cliente?.tipo_doc ?? 'DNI',
+                    num_doc: tramiteInicial.cliente?.num_doc ?? '',
+                    nombres: tramiteInicial.cliente?.nombres ?? '',
+                    ap_paterno: tramiteInicial.cliente?.ap_paterno ?? '',
                     ap_materno: tramiteInicial.cliente?.ap_materno ?? '',
                     email: tramiteInicial.cliente?.email ?? '',
                     telefono: tramiteInicial.cliente?.telefono ?? '',

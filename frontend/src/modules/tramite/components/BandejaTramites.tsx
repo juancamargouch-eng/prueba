@@ -1,23 +1,20 @@
 import { useState } from 'react';
-import { useTramites } from '../hooks/useTramites.js';
-import { TramiteModal } from './TramiteModal.jsx';
-import { CambiarEstadoModal } from './CambiarEstadoModal.jsx';
-import { EliminarTramiteModal } from './EliminarTramiteModal.jsx';
-import { DetalleTramiteModal } from './DetalleTramiteModal.jsx';
+import { useTramites } from '../hooks/useTramites';
+import { TramiteModal } from './TramiteModal';
+import { CambiarEstadoModal } from './CambiarEstadoModal';
+import { EliminarTramiteModal } from './EliminarTramiteModal';
+import { DetalleTramiteModal } from './DetalleTramiteModal';
+import type { Tramite, EstadoTramite, TramiteFiltros } from '../tramite.types';
 
-const ESTADOS = ['REGISTRADO', 'EN_FIRMAS', 'PRESENTADO', 'OBSERVADO', 'INSCRITO', 'CERRADO', 'ANULADO'];
+const ESTADOS: EstadoTramite[] = ['REGISTRADO', 'EN_FIRMAS', 'PRESENTADO', 'OBSERVADO', 'INSCRITO', 'CERRADO', 'ANULADO'];
 
-const COLOR_ESTADO = {
-    REGISTRADO: '#94a3b8',
-    EN_FIRMAS: '#f59e0b',
-    PRESENTADO: '#3b82f6',
-    OBSERVADO: '#ef4444',
-    INSCRITO: '#10b981',
-    CERRADO: '#64748b',
-    ANULADO: '#dc2626',
+
+const COLOR_ESTADO: Record<EstadoTramite, string> = {
+    REGISTRADO: '#94a3b8', EN_FIRMAS: '#f59e0b', PRESENTADO: '#3b82f6',
+    OBSERVADO: '#ef4444', INSCRITO: '#10b981', CERRADO: '#64748b', ANULADO: '#dc2626',
 };
 
-function EstadoBadge({ estado }) {
+function EstadoBadge({ estado }: { estado: EstadoTramite }) {
     return (
         <span style={{
             backgroundColor: COLOR_ESTADO[estado] ?? '#94a3b8',
@@ -34,28 +31,17 @@ function EstadoBadge({ estado }) {
 
 
 export function BandejaTramites() {
-    const [filtros, setFiltros] = useState({ estado: '', busqueda: '', page: 1, pageSize: 10 });
+    const [filtros, setFiltros] = useState<TramiteFiltros>({ estado: '', busqueda: '', page: 1, pageSize: 10 });
     const [modalAbierto, setModalAbierto] = useState(false);
-    const [tramiteEditando, setTramiteEditando] = useState(null); // null = modo crear
-    const [tramiteCambiandoEstado, setTramiteCambiandoEstado] = useState(null);
-    const [tramiteEliminando, setTramiteEliminando] = useState(null);
-    const [tramiteViendo, setTramiteViendo] = useState(null)
+    const [tramiteEditando, setTramiteEditando] = useState<Tramite | null>(null);
+    const [tramiteCambiandoEstado, setTramiteCambiandoEstado] = useState<Tramite | null>(null);
+    const [tramiteEliminando, setTramiteEliminando] = useState<Tramite | null>(null);
+    const [tramiteViendo, setTramiteViendo] = useState<Tramite | null>(null);
 
 
-    const abrirCrear = () => {
-        setTramiteEditando(null);
-        setModalAbierto(true);
-    };
-
-    const abrirEditar = (tramite) => {
-        setTramiteEditando(tramite);
-        setModalAbierto(true);
-    };
-
-    const cerrarModal = () => {
-        setModalAbierto(false);
-        setTramiteEditando(null);
-    };
+    const abrirCrear = () => { setTramiteEditando(null); setModalAbierto(true); };
+    const abrirEditar = (tramite: Tramite) => { setTramiteEditando(tramite); setModalAbierto(true); };
+    const cerrarModal = () => { setModalAbierto(false); setTramiteEditando(null); };
 
     const { data, isLoading, isError, error } = useTramites({
         estado: filtros.estado || undefined,
@@ -64,19 +50,22 @@ export function BandejaTramites() {
         pageSize: filtros.pageSize,
     });
 
-    const cambiarFiltro = (campo, valor) => {
-        setFiltros((prev) => ({ ...prev, [campo]: valor, page: 1 })); // resetea a página 1 al filtrar
+    const cambiarFiltro = (campo: keyof TramiteFiltros, valor: string) => {
+        setFiltros((prev) => ({ ...prev, [campo]: valor, page: 1 }));
     };
 
-    const cambiarPagina = (page) => {
+    const cambiarPagina = (page: number) => {
         setFiltros((prev) => ({ ...prev, page }));
     };
 
     if (isLoading) return <p>Cargando trámites...</p>;
-    if (isError) return <p>Error al cargar los trámites: {error?.response?.data?.mensaje ?? error?.message}</p>;
+    if (isError) {
+        const err = error as { response?: { data?: { mensaje?: string } }; message?: string };
+        return <p>Error al cargar los trámites: {err?.response?.data?.mensaje ?? err?.message}</p>;
+    }
 
-    const tramites = data?.data ?? [];
-    const meta = data?.meta ?? { page: 1, totalPages: 1, total: 0 };
+    const tramites: Tramite[] = data?.data ?? [];
+    const meta = data?.meta ?? { page: 1, totalPages: 1, total: 0, pageSize: 10 };
 
     return (
         <div>

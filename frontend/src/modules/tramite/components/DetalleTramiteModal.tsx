@@ -1,8 +1,15 @@
 // frontend/src/modules/tramite/components/DetalleTramiteModal.jsx
-import { Modal } from '../../../shared/components/Modal.jsx';
-import { HistorialSeguimiento } from '../seguimiento/components/HistorialSeguimiento.jsx';
+import { Modal } from '../../../shared/components/Modal';
+import { HistorialSeguimiento } from '../seguimiento/components/HistorialSeguimiento';
+import type { Tramite } from '../tramite.types';
 
-export function DetalleTramiteModal({ isOpen, onClose, tramite }) {
+interface Props {
+    isOpen: boolean;
+    onClose: () => void;
+    tramite: Tramite | null;
+}
+
+export function DetalleTramiteModal({ isOpen, onClose, tramite }: Props) {
     if (!tramite) return null;
 
     return (

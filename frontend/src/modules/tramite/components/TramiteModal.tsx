@@ -1,9 +1,17 @@
-import { Modal } from '../../../shared/components/Modal.jsx';
-import { TramiteForm } from './TramiteForm.jsx';
-import { useCrearTramite } from '../hooks/useCrearTramite.js';
-import { useActualizarTramite } from '../hooks/useActualizarTramite.js';
+import { Modal } from '../../../shared/components/Modal';
+import { TramiteForm } from './TramiteForm';
+import { useCrearTramite } from '../hooks/useCrearTramite';
+import { useActualizarTramite } from '../hooks/useActualizarTramite';
+import type { Tramite } from '../tramite.types';
+import { AxiosLikeError } from '../../../shared/types/modal';
 
-export function TramiteModal({ isOpen, onClose, tramiteEditando }) {
+interface Props {
+    isOpen: boolean;
+    onClose: () => void;
+    tramiteEditando: Tramite | null;
+}
+
+export function TramiteModal({ isOpen, onClose, tramiteEditando }: Props) {
     const esEdicion = Boolean(tramiteEditando);
 
     const crearMutation = useCrearTramite();
@@ -11,8 +19,8 @@ export function TramiteModal({ isOpen, onClose, tramiteEditando }) {
 
     const mutacionActiva = esEdicion ? actualizarMutation : crearMutation;
 
-    const handleSubmit = (datos) => {
-        if (esEdicion) {
+    const handleSubmit = (datos: unknown) => {
+        if (esEdicion && tramiteEditando) {
             actualizarMutation.mutate(
                 { id: tramiteEditando.id, payload: datos },
                 { onSuccess: onClose }
@@ -35,7 +43,7 @@ export function TramiteModal({ isOpen, onClose, tramiteEditando }) {
             />
             {mutacionActiva.isError && (
                 <p style={{ color: 'red' }}>
-                    {mutacionActiva.error?.response?.data?.mensaje ?? 'Ocurrió un error al guardar'}
+                    {(mutacionActiva.error as AxiosLikeError)?.response?.data?.mensaje ?? 'Ocurrió un error al guardar'}
                 </p>
             )}
         </Modal>

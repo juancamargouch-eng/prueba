@@ -1,10 +1,10 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { eliminarTramite } from '../api/tramite.api.js';
+import { crearTramite } from '../api/tramite.api';
 
-export const useEliminarTramite = () => {
+export const useCrearTramite = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: eliminarTramite,
+        mutationFn: (payload: unknown) => crearTramite(payload),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['tramites'] });
         },

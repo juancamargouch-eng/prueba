@@ -1,17 +1,26 @@
 import { useState } from 'react';
-import { Modal } from '../../../shared/components/Modal.jsx';
-import { useCambiarEstadoTramite } from '../hooks/useCambiarEstadoTramite.js';
-import { TRANSICIONES } from '../../../shared/constants/estados.js';
+import { Modal } from '../../../shared/components/Modal';
+import { useCambiarEstadoTramite } from '../hooks/useCambiarEstadoTramite';
+import { TRANSICIONES } from '../../../shared/constants/estados';
+import type { Tramite, EstadoTramite } from '../tramite.types';
+import type { AxiosLikeError } from '../../../shared/types/modal';
 
-export function CambiarEstadoModal({ isOpen, onClose, tramite }) {
-    const [nuevoEstado, setNuevoEstado] = useState('');
+interface Props {
+    isOpen: boolean;
+    onClose: () => void;
+    tramite: Tramite | null;
+}
+
+export function CambiarEstadoModal({ isOpen, onClose, tramite }: Props) {
+    const [nuevoEstado, setNuevoEstado] = useState<EstadoTramite | ''>('');
     const [comentario, setComentario] = useState('');
     const mutation = useCambiarEstadoTramite();
 
     const opciones = tramite ? (TRANSICIONES[tramite.estado] ?? []) : [];
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        if (!tramite) return;
         mutation.mutate(
             { id: tramite.id, payload: { nuevo_estado: nuevoEstado, comentario } },
             {
@@ -34,9 +43,9 @@ export function CambiarEstadoModal({ isOpen, onClose, tramite }) {
                 <p>Este trámite está en un estado final, no admite cambios.</p>
             ) : (
                 <form onSubmit={handleSubmit}>
-                    <select value={nuevoEstado} onChange={(e) => setNuevoEstado(e.target.value)} required>
+                    <select value={nuevoEstado} onChange={(e) => setNuevoEstado(e.target.value as EstadoTramite)} required>
                         <option value="">-- Selecciona el nuevo estado --</option>
-                        {opciones.map((estado) => (
+                        {opciones.map((estado: EstadoTramite) => (
                             <option key={estado} value={estado}>{estado}</option>
                         ))}
                     </select>
@@ -53,7 +62,7 @@ export function CambiarEstadoModal({ isOpen, onClose, tramite }) {
 
                     {mutation.isError && (
                         <p style={{ color: 'red' }}>
-                            {mutation.error?.response?.data?.mensaje ?? 'Error al cambiar el estado'}
+                            {(mutation.error as AxiosLikeError)?.response?.data?.mensaje ?? 'Error al cambiar el estado'}
                         </p>
                     )}
                 </form>

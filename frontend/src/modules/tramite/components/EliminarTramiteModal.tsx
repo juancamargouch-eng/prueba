@@ -1,7 +1,15 @@
-import { Modal } from '../../../shared/components/Modal.jsx';
-import { useEliminarTramite } from '../hooks/useEliminarTramite.js';
+import { Modal } from '../../../shared/components/Modal';
+import { useEliminarTramite } from '../hooks/useEliminarTramite';
+import type { Tramite } from '../tramite.types';
+import type { AxiosLikeError } from '../../../shared/types/modal';
 
-export function EliminarTramiteModal({ isOpen, onClose, tramite }) {
+interface Props {
+    isOpen: boolean;
+    onClose: () => void;
+    tramite: Tramite | null;
+}
+
+export function EliminarTramiteModal({ isOpen, onClose, tramite }: Props) {
     const mutation = useEliminarTramite();
 
     if (!tramite) return null;
@@ -27,7 +35,7 @@ export function EliminarTramiteModal({ isOpen, onClose, tramite }) {
 
             {mutation.isError && (
                 <p style={{ color: 'red' }}>
-                    {mutation.error?.response?.data?.mensaje ?? 'Error al eliminar el trámite'}
+                    {(mutation.error as AxiosLikeError)?.response?.data?.mensaje ?? 'Error al eliminar el trámite'}
                 </p>
             )}
         </Modal>
